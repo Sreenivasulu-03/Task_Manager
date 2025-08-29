@@ -4,6 +4,7 @@ import com.TaskManager.dto.CreateTaskDTO;
 import com.TaskManager.dto.ErrorResponseDTO;
 import com.TaskManager.dto.UpdateTaskDTO;
 import com.TaskManager.entity.TaskEntity;
+import com.TaskManager.service.NoteService;
 import com.TaskManager.service.TaskService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,13 @@ import java.util.List;
 @RequestMapping("/tasks")
 public class TaskController {
 
-    private final TaskService taskService;
 
-    public TaskController(TaskService taskService) {
+    private final TaskService taskService;
+    private final NoteService noteService;
+
+    public TaskController(TaskService taskService, NoteService noteService) {
         this.taskService = taskService;
+        this.noteService = noteService;
     }
 
     @GetMapping("")
@@ -34,7 +38,7 @@ public class TaskController {
     @GetMapping("/{id}")
     public ResponseEntity<TaskEntity> getTaskById(@PathVariable("id") Integer id){
         var task = taskService.getTaskById(id);
-
+        var notes = noteService.getNotesForTask(id);
         // if the task is not found we will return not found respnentity
 
         if(task == null){
